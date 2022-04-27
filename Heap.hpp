@@ -3,14 +3,15 @@
 
 #include <vector>
 
-template <class T>
+// Heap sort using vector, second parameter determines if it to be sorted in descending order
+template <class T, bool D>
 class Heap {
 public:
-	Heap(bool descending = false);
-	Heap(const Heap<T>& copyHeap);
+	Heap();
+	Heap(const Heap<T, D>& copyHeap);
 	~Heap() {};
 
-	Heap<T>& operator=(const Heap<T>& copyHeap);
+	Heap<T, D>& operator=(const Heap<T, D>& copyHeap);
 
 	/// <summary>
 	/// Add to heap
@@ -30,39 +31,37 @@ public:
 
 private:
 	std::vector<T> m_heap;
-	bool m_descending;
 };
 
-template<class T>
-inline Heap<T>::Heap(bool descending) {
-	m_descending = descending;
+#endif // !HEAP_HPP
+
+template<class T, bool D>
+inline Heap<T, D>::Heap() {
 }
 
-template<class T>
-inline Heap<T>::Heap(const Heap<T>& copyHeap) {
+template<class T, bool D>
+inline Heap<T, D>::Heap(const Heap<T, D>& copyHeap) {
 	m_heap = copyHeap.m_heap;
-	m_descending = copyHeap.m_descending;
 }
 
-template<class T>
-inline Heap<T>& Heap<T>::operator=(const Heap<T>& copyHeap) {
+template<class T, bool D>
+inline Heap<T, D>& Heap<T, D>::operator=(const Heap<T, D>& copyHeap) {
 	if (this == &copyHeap) return *this;
 
 	m_heap = copyHeap.m_heap;
-	m_descending = copyHeap.m_descending;
 
 	return *this;
 }
 
-template<class T>
-inline void Heap<T>::Push(T item) {
+template<class T, bool D>
+inline void Heap<T, D>::Push(T item) {
 	m_heap.push_back(item);
 
 	SortUp(m_heap.size() - 1);
 }
 
-template<class T>
-inline void Heap<T>::Pop() {
+template<class T, bool D>
+inline void Heap<T, D>::Pop() {
 	if (m_heap.size() > 1) {
 		T back = m_heap[m_heap.size() - 1];
 
@@ -78,8 +77,8 @@ inline void Heap<T>::Pop() {
 	}
 }
 
-template<class T>
-inline void Heap<T>::SortDown(const size_t i) {
+template<class T, bool D>
+inline void Heap<T, D>::SortDown(const size_t i) {
 	size_t parent = i;
 
 	while (true) {
@@ -92,12 +91,12 @@ inline void Heap<T>::SortDown(const size_t i) {
 			swapIndex = childL;
 
 			if (childR < m_heap.size()) {
-				bool compareChildren = m_descending ? m_heap[childL] < m_heap[childR] : m_heap[childL] > m_heap[childR];
+				bool compareChildren = D ? m_heap[childL] < m_heap[childR] : m_heap[childL] > m_heap[childR];
 
 				if (compareChildren) swapIndex = childR;
 			}
 
-			bool compareChild = m_descending ? m_heap[parent] < m_heap[swapIndex] : m_heap[parent] > m_heap[swapIndex];
+			bool compareChild = D ? m_heap[parent] < m_heap[swapIndex] : m_heap[parent] > m_heap[swapIndex];
 
 			if (compareChild) {
 				T temp = m_heap[swapIndex];
@@ -115,8 +114,8 @@ inline void Heap<T>::SortDown(const size_t i) {
 	}
 }
 
-template<class T>
-inline void Heap<T>::SortUp(const size_t i) {
+template<class T, bool D>
+inline void Heap<T, D>::SortUp(const size_t i) {
 	int child = (int)i;
 
 	while (true) {
@@ -124,26 +123,23 @@ inline void Heap<T>::SortUp(const size_t i) {
 
 		if (parent < 0) break;
 
-		bool compare = m_descending ? m_heap[parent] < m_heap[child] : m_heap[parent] > m_heap[child];
+		bool compare = D ? m_heap[parent] < m_heap[child] : m_heap[parent] > m_heap[child];
 
 		if (compare) {
 			T temp = m_heap[child];
 
 			m_heap[child] = m_heap[parent];
 			m_heap[parent] = temp;
-
-			child = parent;
-
-			continue;
+		}
+		else {
+			break;
 		}
 
-		break;
+		child = parent;
 	}
 }
 
-template<class T>
-inline T Heap<T>::Top() {
+template<class T, bool D>
+inline T Heap<T, D>::Top() {
 	return m_heap[0];
 }
-
-#endif // !HEAP_HPP
