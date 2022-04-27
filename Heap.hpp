@@ -33,8 +33,6 @@ private:
 	bool m_descending;
 };
 
-#endif // !HEAP_HPP
-
 template<class T>
 inline Heap<T>::Heap(bool descending) {
 	m_descending = descending;
@@ -133,12 +131,13 @@ inline void Heap<T>::SortUp(const size_t i) {
 
 			m_heap[child] = m_heap[parent];
 			m_heap[parent] = temp;
-		}
-		else {
-			break;
+
+			child = parent;
+
+			continue;
 		}
 
-		child = parent;
+		break;
 	}
 }
 
@@ -146,3 +145,5 @@ template<class T>
 inline T Heap<T>::Top() {
 	return m_heap[0];
 }
+
+#endif // !HEAP_HPP
