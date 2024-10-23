@@ -83,7 +83,7 @@ inline void Heap<T, D>::SortDown(const size_t i) {
 
 	while (true) {
 		size_t childL = (parent * 2) + 1;
-		size_t childR = (parent * 2) + 1;
+		size_t childR = (parent * 2) + 2;
 
 		size_t swapIndex = 0;
 
